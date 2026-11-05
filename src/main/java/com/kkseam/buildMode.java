@@ -145,6 +145,9 @@ public class buildMode {
             event.setCanceled(true);
             return;
         }
+        if (buildLoader.isPreviewing(serverPlayer)) {
+            return;
+        }
         ItemStack toGive = new ItemStack(state.getBlock().asItem(), 1);
         MinecraftServer server = serverPlayer.getServer();
         if (server != null && !toGive.isEmpty() && toGive.getItem() != Items.AIR) {
@@ -165,7 +168,7 @@ public class buildMode {
             return;
         }
         Level level = serverPlayer.level();
-        if (level.isClientSide) {
+        if (level.isClientSide || buildLoader.isPreviewing(serverPlayer)) {
             return;
         }
         BlockState state = event.getState();

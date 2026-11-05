@@ -134,12 +134,34 @@ public class SpbConfig {
         return SpbConfig.getGlobalSettings().enableSignSuppression;
     }
 
+    public static String getFinishTitle(UUID uuid) {
+        String t = SpbConfig.getPlayerSettings(uuid).finishTitle;
+        return t == null ? "Superb!" : t;
+    }
+
+    public static String getFinishColor(UUID uuid) {
+        String c = SpbConfig.getPlayerSettings(uuid).finishColor;
+        return c == null ? "green" : c;
+    }
+
+    public static void setFinishTitle(UUID uuid, String text) {
+        SpbConfig.getPlayerSettings(uuid).finishTitle = text;
+        SpbConfig.saveConfig();
+    }
+
+    public static void setFinishColor(UUID uuid, String color) {
+        SpbConfig.getPlayerSettings(uuid).finishColor = color;
+        SpbConfig.saveConfig();
+    }
+
     public static class PlayerSettings {
         public boolean previewEnabled = true;
         public boolean showTutorial = true;
         public String customColor = "green";
         public Map<String, Long> bestTimes = new HashMap<String, Long>();
         public boolean signTextSuppression = true;
+        public String finishTitle = "Superb!";
+        public String finishColor = "green";
     }
 
     public static class ConfigData {

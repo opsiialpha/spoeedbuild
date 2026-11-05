@@ -31,6 +31,7 @@ public class SpbTrainerMod {
     private static void onRegisterCommands(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         commands.register(dispatcher);
+        FinishCommand.register(dispatcher);
     }
 
     private static void onServerChat(ServerChatEvent event) {

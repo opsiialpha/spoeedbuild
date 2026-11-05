@@ -78,7 +78,7 @@ public class spbAccuracy {
                     String expectedId = expected.getBlockType().getId();
                     if (expectedId.equals("minecraft:air")) continue;
                     BlockPos worldPos = new BlockPos(worldOrigin.x() + (x - min.x()), worldOrigin.y() + (y - min.y()), worldOrigin.z() + (z - min.z()));
-                    net.minecraft.world.level.block.state.BlockState actual = world.getBlockState(worldPos);
+                    net.minecraft.world.level.block.state.net.minecraft.world.level.block.state.BlockState actual = world.getBlockState(worldPos);
                     if (spbAccuracy.withinBlockMatch(expectedId, expected, actual)) {
                         ++correct;
                     }
@@ -395,7 +395,7 @@ public class spbAccuracy {
                     if (expectedId.equals("minecraft:air")) continue;
                     ++total;
                     BlockPos worldPos = new BlockPos(origin.x() + (x - min.x()), origin.y() + (y - min.y()), origin.z() + (z - min.z()));
-                    net.minecraft.world.level.block.state.BlockState actual = world.getBlockState(worldPos);
+                    net.minecraft.world.level.block.state.net.minecraft.world.level.block.state.BlockState actual = world.getBlockState(worldPos);
                     if (!spbAccuracy.withinBlockMatch(expectedId, expected, actual)) continue;
                     ++correct;
                 }
@@ -426,6 +426,7 @@ public class spbAccuracy {
                 } else {
                     player.displayClientMessage(Component.literal(("\u00a7aBuild complete! \u00a7eAccuracy: \u00a7a100.0% (" + correct + "/" + total + ") \u00a7bTime: \u00a7f" + (seconds > 0 ? seconds + "." + String.format("%03d", millisRemainder).substring(0, 2) + "s" : elapsedMs + "ms") + " \u00a7a\u2714" + (String)(isNewBest ? " \u00a76(Personal Best!)" : (prevBest != null ? " \u00a77(Best: " + spbAccuracy.formatTime(prevBest) + ")" : "")))), false);
                 }
+                FinishDisplay.show(player, elapsedMs);
                 player.displayClientMessage(Component.literal("\u00a7eArea will reset in 3 seconds..."), false);
                 buildLoader.schedule(player.getServer(), 60, () -> {
                     resetBuild.hardReset(player.getServer().createCommandSourceStack().withPermission(2));
@@ -435,8 +436,6 @@ public class spbAccuracy {
                     }
                     ACTIVE_SESSIONS.remove(player.getUUID());
                 }, player.getUUID().toString());
-            } else {
-                player.displayClientMessage(Component.literal(("\u00a7eBuild Accuracy: \u00a7a" + String.format("%.1f", accuracy) + "% \u00a77(" + correct + "/" + total + ")")), true);
             }
         }
     }

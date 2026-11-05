@@ -31,3 +31,10 @@ noted in `build.gradle`.
   which would crash if ever reached (it never was, since build mode is creative).
 - Removed `Thread.sleep(10)` on the client thread in the sign-screen suppressor and the per-call debug spam.
 - Only one mixin remains: `FlowableFluidMixin` (targets `FlowingFluid#spreadTo`).
+
+## v1.1.0 additions
+- "BUILD!" title when the countdown ends (preview countdown and /spb restart).
+- Blocks broken during the preview countdown just disappear (nothing is given back).
+- Live stopwatch on the action bar (above the hotbar) from the moment the build starts.
+- On completion: custom title in the middle of the screen + final time as the subtitle.
+  `/spb finish text <text>` (supports &-codes), `/spb finish color <name|#RRGGBB>`, `/spb finish test`, `/spb finish reset`.

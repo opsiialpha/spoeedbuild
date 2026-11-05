@@ -100,6 +100,8 @@ public class commands {
         source.sendSuccess(() -> customInputButton, false);
         MutableComponent buildModeLine = Component.literal(("\u00a7e" + bmLabel)).append(bmStatus).append(Component.literal(" \u00a7f| ")).append(bmEnableBtn).append(Component.literal(" ")).append(bmDisableBtn);
         source.sendSuccess(() -> buildModeLine, false);
+        MutableComponent finishLine = Component.literal("\u00a7e" + String.format("%-14s", "Finish Text: ")).append(FinishDisplay.buildTitle(player.getUUID())).append(Component.literal(" ")).append(Component.literal("[Text]").withStyle(ChatFormatting.LIGHT_PURPLE).withStyle(s -> s.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/spb finish text ")))).append(Component.literal(" ")).append(Component.literal("[Color]").withStyle(ChatFormatting.LIGHT_PURPLE).withStyle(s -> s.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/spb finish color "))));
+        source.sendSuccess(() -> finishLine, false);
         source.sendSuccess(() -> divider, false);
     }
 
@@ -232,6 +234,7 @@ public class commands {
             buildLoader.schedule(server, 40, () -> player.connection.send(new ClientboundSetTitleTextPacket(Component.literal("\u00a7c2"))), player.getUUID().toString());
             buildLoader.schedule(server, 60, () -> player.connection.send(new ClientboundSetTitleTextPacket(Component.literal("\u00a7c1"))), player.getUUID().toString());
             buildLoader.schedule(server, 80, () -> {
+                player.connection.send(new ClientboundSetTitleTextPacket(Component.literal("\u00a7a\u00a7lBUILD!")));
                 buildLoader.giveBlocks(player, session.buildName);
                 long now = System.currentTimeMillis();
                 spbAccuracy.ACTIVE_SESSIONS.put(player.getUUID(), new spbAccuracy.BuildSession(session.clipboard, session.min, session.max, session.worldOrigin, now, session.buildName, session.isGrindSession));

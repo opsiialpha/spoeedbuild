@@ -42,6 +42,12 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 public class buildLoader {
     private static final Set<UUID> PLAYERS_RECEIVING_BLOCKS = new HashSet<>();
     private static final PriorityQueue<ScheduledTask> queue = new PriorityQueue<>();
+    // Players currently in the preview/countdown phase (blocks they break give nothing back).
+    private static final Set<UUID> PREVIEWING = new HashSet<>();
+
+    public static boolean isPreviewing(ServerPlayer player) {
+        return PREVIEWING.contains(player.getUUID());
+    }
 
     private static InputStream getBuildStream(String buildName) {
         InputStream customStream = customBuilds.getCustomBuildStream(buildName);
@@ -80,6 +86,7 @@ public class buildLoader {
     }
 
     public static void cancelPlayerTasks(ServerPlayer player) {
+        PREVIEWING.remove(player.getUUID());
         cancelScheduledTasks(player.getUUID().toString());
     }
 
@@ -97,6 +104,11 @@ public class buildLoader {
             for (UUID uuid : new ArrayList<>(spbAccuracy.ACTIVE_SESSIONS.keySet())) {
                 ServerPlayer player = server.getPlayerList().getPlayer(uuid);
                 if (player == null) continue;
+                spbAccuracy.BuildSession session = spbAccuracy.ACTIVE_SESSIONS.get(uuid);
+                if (session != null && !session.isCompleted) {
+                    long elapsed = Math.max(0L, System.currentTimeMillis() - session.startTime);
+                    player.displayClientMessage(Component.literal("\u00a7e\u00a7l" + FinishDisplay.formatTime(elapsed)), true);
+                }
                 spbAccuracy.checkAuto(player, player.serverLevel());
             }
         });
@@ -274,6 +286,7 @@ public class buildLoader {
                 source.sendFailure(Component.literal("Could not find schematic: " + buildName));
                 return 0;
             }
+            PREVIEWING.add(player.getUUID());
             final Clipboard clipboard = readClipboard(stream);
             final BlockVector3 min = clipboard.getMinimumPoint();
             final BlockVector3 max = clipboard.getMaximumPoint();
@@ -303,7 +316,7 @@ public class buildLoader {
             }
 
             int[] countdownTicks = new int[]{0, 20, 40, 60, 80, 100};
-            String[] countdownNumbers = new String[]{"\u00a7a5", "\u00a7e4", "\u00a7e3", "\u00a7c2", "\u00a7c1", "\u00a7cView time over!"};
+            String[] countdownNumbers = new String[]{"\u00a7a5", "\u00a7e4", "\u00a7e3", "\u00a7c2", "\u00a7c1", "\u00a7a\u00a7lBUILD!"};
             for (int i = 0; i < countdownNumbers.length; ++i) {
                 final String number = countdownNumbers[i];
                 final boolean isViewOver = i == 5;
@@ -336,6 +349,7 @@ public class buildLoader {
                     return;
                 }
                 PLAYERS_RECEIVING_BLOCKS.add(currentPlayer.getUUID());
+                PREVIEWING.remove(currentPlayer.getUUID());
                 currentPlayer.getInventory().clearContent();
                 try {
                     if (setHotbars.hasSpecificHotbar(buildName)) {
