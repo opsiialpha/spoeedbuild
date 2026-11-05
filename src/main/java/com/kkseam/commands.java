@@ -230,11 +230,21 @@ public class commands {
             buildLoader.clearBuildArea(player.serverLevel(), session.min, session.max, session.worldOrigin);
             player.getInventory().clearContent();
             MinecraftServer server = world.getServer();
-            buildLoader.schedule(server, 20, () -> player.connection.send(new ClientboundSetTitleTextPacket(Component.literal("\u00a7e3"))), player.getUUID().toString());
-            buildLoader.schedule(server, 40, () -> player.connection.send(new ClientboundSetTitleTextPacket(Component.literal("\u00a7c2"))), player.getUUID().toString());
-            buildLoader.schedule(server, 60, () -> player.connection.send(new ClientboundSetTitleTextPacket(Component.literal("\u00a7c1"))), player.getUUID().toString());
+            buildLoader.schedule(server, 20, () -> {
+                player.connection.send(new ClientboundSetTitleTextPacket(Component.literal("\u00a7e3")));
+                Sfx.countdownTick(player, false);
+            }, player.getUUID().toString());
+            buildLoader.schedule(server, 40, () -> {
+                player.connection.send(new ClientboundSetTitleTextPacket(Component.literal("\u00a7c2")));
+                Sfx.countdownTick(player, false);
+            }, player.getUUID().toString());
+            buildLoader.schedule(server, 60, () -> {
+                player.connection.send(new ClientboundSetTitleTextPacket(Component.literal("\u00a7c1")));
+                Sfx.countdownTick(player, true);
+            }, player.getUUID().toString());
             buildLoader.schedule(server, 80, () -> {
                 player.connection.send(new ClientboundSetTitleTextPacket(Component.literal("\u00a7a\u00a7lBUILD!")));
+                Sfx.buildStart(player);
                 buildLoader.giveBlocks(player, session.buildName);
                 long now = System.currentTimeMillis();
                 spbAccuracy.ACTIVE_SESSIONS.put(player.getUUID(), new spbAccuracy.BuildSession(session.clipboard, session.min, session.max, session.worldOrigin, now, session.buildName, session.isGrindSession));
@@ -456,6 +466,7 @@ public class commands {
                         e.printStackTrace();
                     }
                     player.displayClientMessage(Component.literal("\u00a7aReady to build! Preview was skipped."), false);
+                    Sfx.buildStart(player);
                     return 1;
                 }
                 player.displayClientMessage(Component.literal(("\u00a7bBuild selected: " + buildName)), true);

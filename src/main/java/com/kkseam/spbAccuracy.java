@@ -427,6 +427,7 @@ public class spbAccuracy {
                     player.displayClientMessage(Component.literal(("\u00a7aBuild complete! \u00a7eAccuracy: \u00a7a100.0% (" + correct + "/" + total + ") \u00a7bTime: \u00a7f" + (seconds > 0 ? seconds + "." + String.format("%03d", millisRemainder).substring(0, 2) + "s" : elapsedMs + "ms") + " \u00a7a\u2714" + (String)(isNewBest ? " \u00a76(Personal Best!)" : (prevBest != null ? " \u00a77(Best: " + spbAccuracy.formatTime(prevBest) + ")" : "")))), false);
                 }
                 FinishDisplay.show(player, elapsedMs);
+                Sfx.buildFinish(player);
                 player.displayClientMessage(Component.literal("\u00a7eArea will reset in 3 seconds..."), false);
                 buildLoader.schedule(player.getServer(), 60, () -> {
                     resetBuild.hardReset(player.getServer().createCommandSourceStack().withPermission(2));

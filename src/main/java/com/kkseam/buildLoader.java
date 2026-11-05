@@ -107,7 +107,7 @@ public class buildLoader {
                 spbAccuracy.BuildSession session = spbAccuracy.ACTIVE_SESSIONS.get(uuid);
                 if (session != null && !session.isCompleted) {
                     long elapsed = Math.max(0L, System.currentTimeMillis() - session.startTime);
-                    player.displayClientMessage(Component.literal("\u00a7e\u00a7l" + FinishDisplay.formatTime(elapsed)), true);
+                    player.displayClientMessage(Component.literal("\u00a7e" + FinishDisplay.formatTime(elapsed)), true);
                 }
                 spbAccuracy.checkAuto(player, player.serverLevel());
             }
@@ -297,7 +297,7 @@ public class buildLoader {
             int previewTimeSeconds = SpbConfig.getPreviewTime(player.getUUID());
             int holdDuration = previewTimeSeconds == 0 ? 20 : previewTimeSeconds * 20;
             int countdownStart = buildUpDuration + holdDuration;
-            int teardownStart = countdownStart + 60;
+            int teardownStart = countdownStart;
             int blocksGiveTime = countdownStart + 100;
 
             for (int y = min.y(); y <= max.y(); ++y) {
@@ -315,6 +315,18 @@ public class buildLoader {
                 }, playerId);
             }
 
+            // Chat countdown during the pause (last 5 seconds before the on-screen countdown)
+            for (int n = 5; n >= 1; --n) {
+                int chatTick = countdownStart - n * 20;
+                if (chatTick < 0) continue;
+                final int secondsLeft = n;
+                schedule(server, chatTick, () -> {
+                    String color = secondsLeft >= 4 ? "\u00a7a" : (secondsLeft == 3 ? "\u00a7e" : "\u00a7c");
+                    player.displayClientMessage(Component.literal("\u00a7eStarting in " + color + secondsLeft + "\u00a7e..."), false);
+                    Sfx.chatTick(player);
+                }, playerId);
+            }
+
             int[] countdownTicks = new int[]{0, 20, 40, 60, 80, 100};
             String[] countdownNumbers = new String[]{"\u00a7a5", "\u00a7e4", "\u00a7e3", "\u00a7c2", "\u00a7c1", "\u00a7a\u00a7lBUILD!"};
             for (int i = 0; i < countdownNumbers.length; ++i) {
@@ -323,6 +335,11 @@ public class buildLoader {
                 schedule(server, countdownStart + countdownTicks[i], () -> {
                     player.connection.send(new ClientboundSetTitlesAnimationPacket(10, isViewOver ? 20 : 15, isViewOver ? 10 : 5));
                     player.connection.send(new ClientboundSetTitleTextPacket(Component.literal(number)));
+                    if (isViewOver) {
+                        Sfx.buildStart(player);
+                    } else {
+                        Sfx.countdownTick(player, number.endsWith("1"));
+                    }
                 }, playerId);
             }
 

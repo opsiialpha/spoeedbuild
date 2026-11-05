@@ -47,16 +47,20 @@ public class grindMode {
             buildLoader.schedule(server, 20, () -> {
                 player.connection.send(new ClientboundSetTitlesAnimationPacket(5, 10, 5));
                 player.connection.send(new ClientboundSetTitleTextPacket(Component.literal("\u00a7e3")));
+                Sfx.countdownTick(player, false);
             }, player.getUUID().toString());
             buildLoader.schedule(server, 40, () -> {
                 player.connection.send(new ClientboundSetTitlesAnimationPacket(5, 10, 5));
                 player.connection.send(new ClientboundSetTitleTextPacket(Component.literal("\u00a7c2")));
+                Sfx.countdownTick(player, false);
             }, player.getUUID().toString());
             buildLoader.schedule(server, 60, () -> {
                 player.connection.send(new ClientboundSetTitlesAnimationPacket(5, 10, 5));
                 player.connection.send(new ClientboundSetTitleTextPacket(Component.literal("\u00a7c1")));
+                Sfx.countdownTick(player, true);
             }, player.getUUID().toString());
             buildLoader.schedule(server, 80, () -> {
+                Sfx.buildStart(player);
                 buildLoader.giveBlocks(player, buildName);
                 try (InputStream stream = grindMode.getBuildStream(buildName);){
                     ClipboardFormat format;
