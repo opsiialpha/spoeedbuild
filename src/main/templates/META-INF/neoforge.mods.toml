@@ -1,0 +1,42 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+issueTrackerURL="https://github.com/KKSEAM/spbtrainer/issues"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+displayURL="https://github.com/KKSEAM/spbtrainer"
+logoFile="icon.png"
+authors="ilovelifethankyou (Discord) / SteveHarvey_IRL (Hypixel); NeoForge 1.21.1 port"
+credits="SAL4F (most of the builds), HanaHippo, all testers and contributors"
+displayTest="IGNORE_SERVER_VERSION"
+description='''
+Practice Hypixel Speed Builders builds offline! Requires WorldEdit.
+NeoForge 1.21.1 port of the Fabric mod by KKSEAM.
+'''
+
+[[mixins]]
+config="spbtrainer.mixins.json"
+
+[[dependencies.${mod_id}]]
+    modId="neoforge"
+    type="required"
+    versionRange="[${neo_version},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="worldedit"
+    type="required"
+    versionRange="[7.3.5,)"
+    ordering="AFTER"
+    side="BOTH"
