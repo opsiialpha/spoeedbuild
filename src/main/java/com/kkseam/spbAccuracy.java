@@ -78,7 +78,7 @@ public class spbAccuracy {
                     String expectedId = expected.getBlockType().getId();
                     if (expectedId.equals("minecraft:air")) continue;
                     BlockPos worldPos = new BlockPos(worldOrigin.x() + (x - min.x()), worldOrigin.y() + (y - min.y()), worldOrigin.z() + (z - min.z()));
-                    net.minecraft.world.level.block.state.net.minecraft.world.level.block.state.BlockState actual = world.getBlockState(worldPos);
+                    net.minecraft.world.level.block.state.BlockState actual = world.getBlockState(worldPos);
                     if (spbAccuracy.withinBlockMatch(expectedId, expected, actual)) {
                         ++correct;
                     }
@@ -395,7 +395,7 @@ public class spbAccuracy {
                     if (expectedId.equals("minecraft:air")) continue;
                     ++total;
                     BlockPos worldPos = new BlockPos(origin.x() + (x - min.x()), origin.y() + (y - min.y()), origin.z() + (z - min.z()));
-                    net.minecraft.world.level.block.state.net.minecraft.world.level.block.state.BlockState actual = world.getBlockState(worldPos);
+                    net.minecraft.world.level.block.state.BlockState actual = world.getBlockState(worldPos);
                     if (!spbAccuracy.withinBlockMatch(expectedId, expected, actual)) continue;
                     ++correct;
                 }
