@@ -1,40 +1,28 @@
-# Hypixel Speed Builders Trainer - NeoForge 1.21.1 port
+# Paero's SpeedBuilder (NeoForge 1.21.1)
 
-Port of KKSEAM's Fabric mod "spbtrainer" (1.21.4) to **NeoForge 1.21.1**.
-Original: https://github.com/KKSEAM/spbtrainer (license file shipped as CC0 1.0, see LICENSE_spbtrainer).
-All 355 builds, commands, keybinds and behaviour are the same. The original source was not public, so
-this was reconstructed from the decompiled jar and then rewritten for NeoForge / Mojang mappings.
+Practice speed building offline: build previews, countdown, accuracy check, stopwatch and a finish screen.
+Requires **WorldEdit for NeoForge 1.21.1** (7.3.5+).
 
 ## Build
-Needs JDK 21.
+Needs JDK 21. The builds are in `builds.zip`; unzip them first:
 
+    unzip -q builds.zip -d src/main/resources/assets/paerospeedbuilder/
     ./gradlew build          (Windows: gradlew.bat build)
 
-The jar ends up in `build/libs/spbtrainer-1.0.0.jar`. Test with `./gradlew runClient`.
+The jar ends up in `build/libs/paerospeedbuilder-1.3.0.jar`. Test with `./gradlew runClient`.
 
-If CurseMaven is unreachable, put the WorldEdit jar in `libs/` and use the `files(...)` lines
-noted in `build.gradle`.
+## Commands
+- `/sb <build>` - preview, countdown, then build (enters build mode, leaves it when you finish)
+- `/sb area` - 15x15 platform under your feet + 7 blocks of air above
+- `/sb grind <build>`, `/sb view <build>`, `/sb restart`, `/sb reset`, `/sb stop`
+- `/sb create|list|delete` - custom builds
+- `/sb time <build>` - best time
+- `/sb config` - settings (also in Mods -> Paero's SpeedBuilder -> Config)
+- `/sb finish text|color|test|reset` - finish title
 
-## Install
-1. NeoForge 1.21.1
-2. **WorldEdit for NeoForge 1.21.1** (7.3.5 or newer, 7.3.8 recommended) - Fabric API is NOT needed
-3. Put `spbtrainer-1.0.0.jar` in `mods/`
-4. Old times: copy `config/spbtrainer.json` from your Fabric instance (same format).
-   Custom builds: copy `config/spbtrainer/custom_builds/`.
-
-## Changes from the Fabric version
-- Fabric API events -> NeoForge events (commands, chat, server tick, right click block, block break).
-- `FabricAdapter` -> WorldEdit's `NeoForgeAdapter`.
-- Keybinds registered through `RegisterKeyMappingsEvent` with translatable names (still Grave = clear, F6 = restart).
-- Player break-speed / canHarvest mixins replaced by `PlayerEvent.BreakSpeed` / `HarvestCheck` events.
-- Removed the `breakDeltaClient` mixin: it targeted a method returning `int` but forced a `Float`,
-  which would crash if ever reached (it never was, since build mode is creative).
-- Removed `Thread.sleep(10)` on the client thread in the sign-screen suppressor and the per-call debug spam.
-- Only one mixin remains: `FlowableFluidMixin` (targets `FlowingFluid#spreadTo`).
-
-## v1.1.0 additions
-- "BUILD!" title when the countdown ends (preview countdown and /spb restart).
-- Blocks broken during the preview countdown just disappear (nothing is given back).
-- Live stopwatch on the action bar (above the hotbar) from the moment the build starts.
-- On completion: custom title in the middle of the screen + final time as the subtitle.
-  `/spb finish text <text>` (supports &-codes), `/spb finish color <name|#RRGGBB>`, `/spb finish test`, `/spb finish reset`.
+## Config
+- Build Preview / Preview Time
+- Finish Title Time (1-60 s, default 5) - `/sb config finishtime <seconds>`
+- Difficulty - `/sb config difficulty default|paero`
+  - **Default**: starting a build clears your inventory and gives you the blocks
+  - **Paero**: your inventory is never touched (nothing cleared, given, used up or refunded)
